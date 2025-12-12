@@ -25,7 +25,10 @@ include __DIR__ . '/../includes/header.php';
 <div class="data-card">
     <div class="data-card-header">
         <h3>All Projects</h3>
-        <a href="add.php" class="btn btn-add btn-sm">+ Add New</a>
+        <div style="display: flex; gap: 0.5rem;">
+            <a href="export.php" class="btn btn-sm" style="background: #27ae60; color: white;">📥 Download Excel</a>
+            <a href="add.php" class="btn btn-add btn-sm">+ Add New</a>
+        </div>
     </div>
     
     <?php if (isset($_GET['deleted'])): ?>

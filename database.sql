@@ -17,8 +17,9 @@ CREATE TABLE IF NOT EXISTS dashboard (
 -- Tabel untuk halaman Project
 CREATE TABLE IF NOT EXISTS project_page (
     id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255),
     project_image VARCHAR(255),
-    tool_logo VARCHAR(255),
+    tool_logo TEXT,
     description TEXT,
     project_link_github VARCHAR(255)
 );
@@ -26,7 +27,8 @@ CREATE TABLE IF NOT EXISTS project_page (
 -- Tabel untuk halaman Design
 CREATE TABLE IF NOT EXISTS design_page (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    design_image VARCHAR(255),
+    title VARCHAR(255),
+    design_image TEXT,
     design_link VARCHAR(255)
 );
 
@@ -44,9 +46,12 @@ CREATE TABLE IF NOT EXISTS education_and_certification_page (
 -- Tabel untuk halaman Work Experience
 CREATE TABLE IF NOT EXISTS work_experience_page (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    image_activity_work_carrousel VARCHAR(255),
+    image_activity_work_carrousel TEXT,
     name_company VARCHAR(255),
-    date_work DATE,
+    date_work_start DATE,
+    date_work_end DATE,
+    still_working TINYINT(1) DEFAULT 0,
+    work_status ENUM('magang', 'kerja') DEFAULT 'kerja',
     activity_description TEXT
 );
 

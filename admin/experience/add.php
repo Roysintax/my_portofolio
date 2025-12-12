@@ -1,6 +1,6 @@
 <?php
 /**
- * Admin - Add Work Experience (with Multiple Image Carousel)
+ * Admin - Add Work Experience (Enhanced with Start/End Date, Status)
  */
 
 require_once __DIR__ . '/../includes/auth_check.php';
@@ -10,7 +10,10 @@ $pageTitle = 'Add Experience';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $company = $_POST['company'] ?? '';
-    $date_work = $_POST['date_work'] ?? null;
+    $date_work_start = $_POST['date_work_start'] ?? null;
+    $date_work_end = $_POST['date_work_end'] ?? null;
+    $still_working = isset($_POST['still_working']) ? 1 : 0;
+    $work_status = $_POST['work_status'] ?? 'kerja';
     $description = $_POST['description'] ?? '';
     $images = [];
     
@@ -31,11 +34,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
     
-    // Store images as JSON string (or comma-separated for simplicity)
+    // If still working, set end date to null
+    if ($still_working) {
+        $date_work_end = null;
+    }
+    
     $images_string = implode(',', $images);
     
-    $stmt = $pdo->prepare("INSERT INTO work_experience_page (image_activity_work_carrousel, name_company, date_work, activity_description) VALUES (?, ?, ?, ?)");
-    $stmt->execute([$images_string, $company, $date_work ?: null, $description]);
+    $stmt = $pdo->prepare("INSERT INTO work_experience_page (image_activity_work_carrousel, name_company, date_work_start, date_work_end, still_working, work_status, activity_description) VALUES (?, ?, ?, ?, ?, ?, ?)");
+    $stmt->execute([$images_string, $company, $date_work_start ?: null, $date_work_end ?: null, $still_working, $work_status, $description]);
     header('Location: index.php?added=1');
     exit;
 }
@@ -53,19 +60,16 @@ include __DIR__ . '/../includes/header.php';
     position: relative;
     transition: all 0.3s ease;
 }
-
 .image-input-group:hover {
     border-color: var(--accent);
     background: #fff5f6;
 }
-
 .image-input-group .group-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1rem;
 }
-
 .image-input-group .group-number {
     background: var(--gradient-accent);
     color: white;
@@ -78,7 +82,6 @@ include __DIR__ . '/../includes/header.php';
     font-weight: 600;
     font-size: 0.85rem;
 }
-
 .btn-remove-group {
     background: #e74c3c;
     color: white;
@@ -88,17 +91,7 @@ include __DIR__ . '/../includes/header.php';
     border-radius: 50%;
     cursor: pointer;
     font-size: 1.2rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s;
 }
-
-.btn-remove-group:hover {
-    background: #c0392b;
-    transform: scale(1.1);
-}
-
 .btn-add-more {
     display: flex;
     align-items: center;
@@ -112,16 +105,11 @@ include __DIR__ . '/../includes/header.php';
     cursor: pointer;
     color: var(--accent);
     font-weight: 600;
-    font-size: 1rem;
-    transition: all 0.3s ease;
     margin-top: 1rem;
 }
-
 .btn-add-more:hover {
     background: linear-gradient(135deg, #fff5f6 0%, #ffe8eb 100%);
-    transform: translateY(-2px);
 }
-
 .btn-add-more .plus-icon {
     width: 32px;
     height: 32px;
@@ -132,9 +120,17 @@ include __DIR__ . '/../includes/header.php';
     align-items: center;
     justify-content: center;
     font-size: 1.5rem;
-    font-weight: 300;
 }
-
+.carousel-images-section {
+    background: #f0f4f8;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-top: 1rem;
+}
+.carousel-images-section h4 {
+    margin-bottom: 1rem;
+    color: var(--primary);
+}
 .image-preview {
     max-width: 120px;
     max-height: 80px;
@@ -142,27 +138,73 @@ include __DIR__ . '/../includes/header.php';
     margin-top: 0.5rem;
     display: none;
 }
-
-.carousel-images-section {
-    background: #f0f4f8;
-    border-radius: 12px;
-    padding: 1.5rem;
-    margin-top: 1rem;
+.date-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
 }
-
-.carousel-images-section h4 {
-    margin-bottom: 1rem;
-    color: var(--primary);
+.still-working-check {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.75rem;
+    padding: 1rem;
+    background: #e8f5e9;
+    border: 2px solid #4caf50;
+    border-radius: 10px;
+    margin-top: 0.5rem;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+.still-working-check:hover {
+    background: #c8e6c9;
+}
+.still-working-check input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    accent-color: #4caf50;
+}
+.still-working-check .check-label {
+    color: #2e7d32;
+    font-weight: 600;
+}
+.status-select {
+    display: flex;
+    gap: 1rem;
+    margin-top: 0.5rem;
+}
+.status-option {
+    flex: 1;
+    padding: 1rem;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+.status-option:hover {
+    border-color: var(--accent);
+}
+.status-option.selected {
+    border-color: var(--accent);
+    background: linear-gradient(135deg, #fff5f6 0%, #ffe8eb 100%);
+}
+.status-option input {
+    display: none;
+}
+.status-option .status-icon {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+.status-option .status-label {
+    font-weight: 600;
+    color: var(--primary);
 }
 </style>
 
 <div class="form-card">
     <div class="form-card-header">
         <h3>💼 Add Work Experience</h3>
-        <p>Add work experience with multiple activity images (carousel)</p>
+        <p>Add work experience with details and images</p>
     </div>
     
     <div class="form-card-body">
@@ -172,9 +214,42 @@ include __DIR__ . '/../includes/header.php';
                 <input type="text" id="company" name="company" class="form-control" placeholder="e.g. PT. Example Indonesia" required>
             </div>
             
+            <!-- Work Status -->
             <div class="form-group">
-                <label for="date_work">Work Date</label>
-                <input type="date" id="date_work" name="date_work" class="form-control">
+                <label>Status Pekerjaan</label>
+                <div class="status-select">
+                    <label class="status-option selected" id="status-kerja">
+                        <input type="radio" name="work_status" value="kerja" checked onchange="updateStatus(this)">
+                        <div class="status-icon">💼</div>
+                        <div class="status-label">Kerja</div>
+                    </label>
+                    <label class="status-option" id="status-magang">
+                        <input type="radio" name="work_status" value="magang" onchange="updateStatus(this)">
+                        <div class="status-icon">📚</div>
+                        <div class="status-label">Magang</div>
+                    </label>
+                </div>
+            </div>
+            
+            <!-- Date Range -->
+            <div class="form-group">
+                <label>Periode Kerja</label>
+                <div class="date-row">
+                    <div>
+                        <label for="date_work_start" style="font-size: 0.85rem; color: #666;">Tanggal Mulai</label>
+                        <input type="date" id="date_work_start" name="date_work_start" class="form-control">
+                    </div>
+                    <div id="endDateContainer">
+                        <label for="date_work_end" style="font-size: 0.85rem; color: #666;">Tanggal Selesai</label>
+                        <input type="date" id="date_work_end" name="date_work_end" class="form-control">
+                    </div>
+                </div>
+                
+                <!-- Still Working Checkbox -->
+                <label class="still-working-check" id="stillWorkingLabel">
+                    <input type="checkbox" name="still_working" id="still_working" onchange="toggleEndDate()">
+                    <span class="check-label">✓ Masih bekerja disini?</span>
+                </label>
             </div>
             
             <div class="form-group">
@@ -188,7 +263,6 @@ include __DIR__ . '/../includes/header.php';
                 <p style="font-size: 0.9rem; color: #666; margin-bottom: 1rem;">Add multiple images that will display as a carousel</p>
                 
                 <div id="imageInputsContainer">
-                    <!-- Initial image input -->
                     <div class="image-input-group" data-index="0">
                         <div class="group-header">
                             <span class="group-number">1</span>
@@ -199,7 +273,6 @@ include __DIR__ . '/../includes/header.php';
                     </div>
                 </div>
                 
-                <!-- Add More Button -->
                 <button type="button" class="btn-add-more" onclick="addMoreImages()">
                     <span class="plus-icon">+</span>
                     Add Another Image
@@ -221,7 +294,6 @@ let imageIndex = 1;
 
 function addMoreImages() {
     const container = document.getElementById('imageInputsContainer');
-    
     const newGroup = document.createElement('div');
     newGroup.className = 'image-input-group';
     newGroup.dataset.index = imageIndex;
@@ -237,43 +309,32 @@ function addMoreImages() {
     
     container.appendChild(newGroup);
     imageIndex++;
-    
     updateGroupNumbers();
     updateRemoveButtons();
-    
     newGroup.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
 function removeGroup(button) {
-    const group = button.closest('.image-input-group');
-    group.style.opacity = '0';
-    group.style.transform = 'scale(0.9)';
-    
-    setTimeout(() => {
-        group.remove();
-        updateGroupNumbers();
-        updateRemoveButtons();
-    }, 200);
+    button.closest('.image-input-group').remove();
+    updateGroupNumbers();
+    updateRemoveButtons();
 }
 
 function updateGroupNumbers() {
-    const groups = document.querySelectorAll('.image-input-group');
-    groups.forEach((group, index) => {
+    document.querySelectorAll('.image-input-group').forEach((group, index) => {
         group.querySelector('.group-number').textContent = index + 1;
     });
 }
 
 function updateRemoveButtons() {
     const groups = document.querySelectorAll('.image-input-group');
-    groups.forEach((group, index) => {
-        const removeBtn = group.querySelector('.btn-remove-group');
-        removeBtn.style.display = groups.length > 1 ? 'flex' : 'none';
+    groups.forEach(group => {
+        group.querySelector('.btn-remove-group').style.display = groups.length > 1 ? 'flex' : 'none';
     });
 }
 
 function previewImage(input) {
     const preview = input.parentElement.querySelector('.image-preview');
-    
     if (input.files && input.files[0]) {
         const reader = new FileReader();
         reader.onload = function(e) {
@@ -284,6 +345,26 @@ function previewImage(input) {
     } else {
         preview.style.display = 'none';
     }
+}
+
+function toggleEndDate() {
+    const isChecked = document.getElementById('still_working').checked;
+    const endDateContainer = document.getElementById('endDateContainer');
+    const endDateInput = document.getElementById('date_work_end');
+    
+    if (isChecked) {
+        endDateContainer.style.opacity = '0.5';
+        endDateInput.disabled = true;
+        endDateInput.value = '';
+    } else {
+        endDateContainer.style.opacity = '1';
+        endDateInput.disabled = false;
+    }
+}
+
+function updateStatus(radio) {
+    document.querySelectorAll('.status-option').forEach(opt => opt.classList.remove('selected'));
+    radio.closest('.status-option').classList.add('selected');
 }
 </script>
 

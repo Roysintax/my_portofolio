@@ -1,7 +1,8 @@
 <?php
 /**
  * Work Experience Timeline Section Component
- * Supports multiple images per experience (carousel with 4:5 aspect ratio)
+ * Supports multiple images per experience (carousel with 16:9 aspect ratio)
+ * Enhanced with start/end dates, still working status, and work type
  */
 ?>
 
@@ -14,15 +15,46 @@
                     <div class="timeline-item">
                         <div class="timeline-date">
                             <?php 
-                            if (!empty($exp['date_work'])) {
-                                echo date('F Y', strtotime($exp['date_work']));
+                            // Format date range
+                            $startDate = '';
+                            $endDate = '';
+                            
+                            if (!empty($exp['date_work_start'])) {
+                                $startDate = date('M Y', strtotime($exp['date_work_start']));
+                            }
+                            
+                            if (!empty($exp['still_working']) && $exp['still_working'] == 1) {
+                                $endDate = 'Present';
+                            } elseif (!empty($exp['date_work_end'])) {
+                                $endDate = date('M Y', strtotime($exp['date_work_end']));
+                            }
+                            
+                            if ($startDate && $endDate) {
+                                echo $startDate . ' - ' . $endDate;
+                            } elseif ($startDate) {
+                                echo $startDate;
                             } else {
                                 echo 'Date not specified';
                             }
                             ?>
+                            
+                            <?php if (!empty($exp['still_working']) && $exp['still_working'] == 1): ?>
+                                <?php if ($exp['work_status'] === 'magang'): ?>
+                                    <span class="still-working-badge magang">🟢 Masih Magang</span>
+                                <?php else: ?>
+                                    <span class="still-working-badge kerja">🟢 Masih Bekerja</span>
+                                <?php endif; ?>
+                            <?php endif; ?>
                         </div>
                         
                         <div class="timeline-content">
+                            <!-- Work Status Badge -->
+                            <?php if (!empty($exp['work_status'])): ?>
+                                <span class="work-status-badge <?php echo $exp['work_status']; ?>">
+                                    <?php echo $exp['work_status'] === 'magang' ? '📚 Magang' : '💼 Kerja'; ?>
+                                </span>
+                            <?php endif; ?>
+                            
                             <h4><?php echo htmlspecialchars($exp['name_company'] ?? 'Company Name'); ?></h4>
                             <p><?php echo nl2br(htmlspecialchars($exp['activity_description'] ?? '')); ?></p>
                             
@@ -35,7 +67,7 @@
                                 ?>
                                 
                                 <?php if (count($images) > 1): ?>
-                                    <!-- Multiple Images Carousel (4:5 Aspect Ratio) -->
+                                    <!-- Multiple Images Carousel (16:9) -->
                                     <div class="exp-carousel" id="<?php echo $carouselId; ?>" data-total="<?php echo count($images); ?>">
                                         <div class="exp-carousel-viewport">
                                             <div class="exp-carousel-track">
@@ -47,7 +79,7 @@
                                             </div>
                                         </div>
                                         
-                                        <!-- Carousel Controls -->
+                                        <!-- Controls -->
                                         <button class="exp-nav-btn exp-prev" onclick="expSlide('<?php echo $carouselId; ?>', -1)">
                                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                                 <polyline points="15,18 9,12 15,6"></polyline>
@@ -59,12 +91,10 @@
                                             </svg>
                                         </button>
                                         
-                                        <!-- Counter Badge -->
                                         <div class="exp-counter">
                                             <span class="exp-current">1</span> / <?php echo count($images); ?>
                                         </div>
                                         
-                                        <!-- Indicators -->
                                         <div class="exp-indicators">
                                             <?php foreach ($images as $imgIndex => $image): ?>
                                                 <button class="exp-dot <?php echo $imgIndex === 0 ? 'active' : ''; ?>" 
@@ -73,7 +103,7 @@
                                         </div>
                                     </div>
                                 <?php else: ?>
-                                    <!-- Single Image (4:5 Aspect Ratio) -->
+                                    <!-- Single Image -->
                                     <div class="timeline-image-single">
                                         <img src="/portofolio/assets/images/<?php echo htmlspecialchars($images[0]); ?>" alt="Work Activity">
                                     </div>
@@ -94,7 +124,48 @@
 </section>
 
 <style>
-/* Experience Carousel - 16:9 Aspect Ratio (1200x628) Horizontal */
+/* Timeline Content Centering */
+.timeline-content {
+    text-align: center;
+}
+.timeline-content h4,
+.timeline-content p {
+    text-align: center;
+}
+
+/* Work Status Badge */
+.work-status-badge {
+    display: inline-block;
+    padding: 0.35rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+}
+.work-status-badge.kerja {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+.work-status-badge.magang {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    color: white;
+}
+
+/* Still Working Badge */
+.still-working-badge {
+    display: block;
+    margin-top: 0.5rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+.still-working-badge.kerja {
+    color: #4caf50;
+}
+.still-working-badge.magang {
+    color: #ff9800;
+}
+
+/* Experience Carousel - 16:9 Aspect Ratio Horizontal */
 .exp-carousel {
     position: relative;
     width: 100%;
@@ -104,16 +175,6 @@
     overflow: hidden;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
     background: #000;
-}
-
-/* Center timeline content */
-.timeline-content {
-    text-align: center;
-}
-
-.timeline-content h4,
-.timeline-content p {
-    text-align: center;
 }
 
 .exp-carousel-viewport {
@@ -160,17 +221,6 @@
     transform: scale(0.9) translateX(100px);
 }
 
-/* Fade + Zoom Effect */
-.exp-carousel-slide.fade-out {
-    opacity: 0;
-    transform: scale(1.05);
-}
-
-.exp-carousel-slide.fade-in {
-    opacity: 1;
-    transform: scale(1);
-}
-
 .exp-carousel-slide img {
     width: 100%;
     height: 100%;
@@ -206,20 +256,10 @@
     background: var(--accent);
     color: white;
     transform: translateY(-50%) scale(1.1);
-    box-shadow: 0 6px 20px rgba(233, 69, 96, 0.4);
 }
 
-.exp-nav-btn:active {
-    transform: translateY(-50%) scale(0.95);
-}
-
-.exp-prev {
-    left: 12px;
-}
-
-.exp-next {
-    right: 12px;
-}
+.exp-prev { left: 12px; }
+.exp-next { right: 12px; }
 
 /* Counter Badge */
 .exp-counter {
@@ -227,14 +267,12 @@
     top: 12px;
     right: 12px;
     background: rgba(0, 0, 0, 0.7);
-    backdrop-filter: blur(10px);
     color: white;
     padding: 6px 12px;
     border-radius: 20px;
     font-size: 0.85rem;
     font-weight: 600;
     z-index: 10;
-    letter-spacing: 1px;
 }
 
 /* Indicators */
@@ -255,20 +293,14 @@
     background: rgba(255, 255, 255, 0.5);
     border: none;
     cursor: pointer;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     padding: 0;
-}
-
-.exp-dot:hover {
-    background: rgba(255, 255, 255, 0.8);
-    transform: scale(1.2);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .exp-dot.active {
     background: var(--accent);
     width: 24px;
     border-radius: 4px;
-    box-shadow: 0 0 10px rgba(233, 69, 96, 0.5);
 }
 
 /* Single Image Style */
@@ -305,34 +337,9 @@
     100% { width: 100%; }
 }
 
-/* Touch/Swipe Hint */
-.exp-carousel::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 60px;
-    background: linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, transparent 100%);
-    z-index: 5;
-    pointer-events: none;
-}
-
-/* Responsive */
 @media (max-width: 768px) {
-    .exp-carousel {
-        max-width: 100%;
-        border-radius: 12px;
-    }
-    
-    .exp-nav-btn {
-        width: 36px;
-        height: 36px;
-        opacity: 1;
-    }
-    
-    .exp-prev { left: 8px; }
-    .exp-next { right: 8px; }
+    .exp-carousel { max-width: 100%; border-radius: 12px; }
+    .exp-nav-btn { width: 36px; height: 36px; opacity: 1; }
 }
 </style>
 
@@ -350,22 +357,18 @@ document.addEventListener('DOMContentLoaded', function() {
         // Auto-play
         startAutoPlay(carousel.id);
         
-        // Pause on hover
         carousel.addEventListener('mouseenter', () => stopAutoPlay(carousel.id));
         carousel.addEventListener('mouseleave', () => startAutoPlay(carousel.id));
         
         // Touch/Swipe support
         let touchStartX = 0;
-        let touchEndX = 0;
-        
-        carousel.addEventListener('touchstart', e => {
-            touchStartX = e.changedTouches[0].screenX;
-            stopAutoPlay(carousel.id);
-        }, { passive: true });
-        
+        carousel.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; stopAutoPlay(carousel.id); }, { passive: true });
         carousel.addEventListener('touchend', e => {
-            touchEndX = e.changedTouches[0].screenX;
-            handleSwipe(carousel.id, touchStartX, touchEndX);
+            const touchEndX = e.changedTouches[0].screenX;
+            const diff = touchStartX - touchEndX;
+            if (Math.abs(diff) > 50) {
+                expSlide(carousel.id, diff > 0 ? 1 : -1);
+            }
             startAutoPlay(carousel.id);
         }, { passive: true });
     });
@@ -375,26 +378,11 @@ const autoPlayIntervals = {};
 
 function startAutoPlay(carouselId) {
     stopAutoPlay(carouselId);
-    autoPlayIntervals[carouselId] = setInterval(() => {
-        expSlide(carouselId, 1);
-    }, 5000);
+    autoPlayIntervals[carouselId] = setInterval(() => { expSlide(carouselId, 1); }, 5000);
 }
 
 function stopAutoPlay(carouselId) {
-    if (autoPlayIntervals[carouselId]) {
-        clearInterval(autoPlayIntervals[carouselId]);
-    }
-}
-
-function handleSwipe(carouselId, startX, endX) {
-    const diff = startX - endX;
-    if (Math.abs(diff) > 50) {
-        if (diff > 0) {
-            expSlide(carouselId, 1); // Swipe left = next
-        } else {
-            expSlide(carouselId, -1); // Swipe right = prev
-        }
-    }
+    if (autoPlayIntervals[carouselId]) clearInterval(autoPlayIntervals[carouselId]);
 }
 
 function expSlide(carouselId, direction) {
@@ -408,43 +396,22 @@ function expSlide(carouselId, direction) {
     
     let currentIndex = Array.from(slides).findIndex(s => s.classList.contains('active'));
     
-    // Remove all transition classes
-    slides.forEach(slide => {
-        slide.classList.remove('active', 'prev', 'next', 'fade-out', 'fade-in');
-    });
-    
-    // Set exit animation for current slide
+    slides.forEach(slide => slide.classList.remove('active', 'prev', 'next'));
     slides[currentIndex].classList.add(direction > 0 ? 'prev' : 'next');
     
-    // Calculate new index
     let newIndex = currentIndex + direction;
     if (newIndex >= total) newIndex = 0;
     if (newIndex < 0) newIndex = total - 1;
     
-    // Set enter animation for new slide
-    setTimeout(() => {
-        slides[newIndex].classList.add('active');
-    }, 50);
+    setTimeout(() => slides[newIndex].classList.add('active'), 50);
     
-    // Update dots
-    dots.forEach((dot, i) => {
-        dot.classList.toggle('active', i === newIndex);
-    });
+    dots.forEach((dot, i) => dot.classList.toggle('active', i === newIndex));
     
-    // Update counter with animation
     if (counter) {
         counter.style.transform = 'scale(1.2)';
         counter.textContent = newIndex + 1;
-        setTimeout(() => {
-            counter.style.transform = 'scale(1)';
-        }, 150);
+        setTimeout(() => counter.style.transform = 'scale(1)', 150);
     }
-    
-    // Reset progress bar animation
-    carousel.style.animation = 'none';
-    setTimeout(() => {
-        carousel.style.animation = '';
-    }, 10);
 }
 
 function expGoto(carouselId, targetIndex) {
@@ -456,34 +423,19 @@ function expGoto(carouselId, targetIndex) {
     const counter = carousel.querySelector('.exp-current');
     
     let currentIndex = Array.from(slides).findIndex(s => s.classList.contains('active'));
-    
     if (currentIndex === targetIndex) return;
     
     const direction = targetIndex > currentIndex ? 1 : -1;
     
-    slides.forEach(slide => {
-        slide.classList.remove('active', 'prev', 'next');
-    });
-    
+    slides.forEach(slide => slide.classList.remove('active', 'prev', 'next'));
     slides[currentIndex].classList.add(direction > 0 ? 'prev' : 'next');
     
-    setTimeout(() => {
-        slides[targetIndex].classList.add('active');
-    }, 50);
+    setTimeout(() => slides[targetIndex].classList.add('active'), 50);
     
-    dots.forEach((dot, i) => {
-        dot.classList.toggle('active', i === targetIndex);
-    });
+    dots.forEach((dot, i) => dot.classList.toggle('active', i === targetIndex));
     
-    if (counter) {
-        counter.style.transform = 'scale(1.2)';
-        counter.textContent = targetIndex + 1;
-        setTimeout(() => {
-            counter.style.transform = 'scale(1)';
-        }, 150);
-    }
+    if (counter) counter.textContent = targetIndex + 1;
     
-    // Restart autoplay
     stopAutoPlay(carouselId);
     startAutoPlay(carouselId);
 }

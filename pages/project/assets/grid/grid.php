@@ -36,7 +36,7 @@
                         </div>
                         
                         <div class="project-content">
-                            <h4>Project #<?php echo $project['id']; ?></h4>
+                            <h4><?php echo htmlspecialchars($project['title'] ?? 'Untitled Project'); ?></h4>
                             <p class="card-text">
                                 <?php 
                                 $description = $project['description'] ?? '';

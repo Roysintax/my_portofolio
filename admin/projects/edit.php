@@ -26,6 +26,7 @@ if (!empty($project['tool_logo'])) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $title = $_POST['title'] ?? '';
     $description = $_POST['description'] ?? '';
     $github_link = $_POST['github_link'] ?? '';
     $project_image = $project['project_image'];
@@ -60,8 +61,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     $tool_logo_string = implode(',', $tool_logos);
     
-    $stmt = $pdo->prepare("UPDATE project_page SET project_image = ?, tool_logo = ?, description = ?, project_link_github = ? WHERE id = ?");
-    if ($stmt->execute([$project_image, $tool_logo_string, $description, $github_link, $id])) {
+    $stmt = $pdo->prepare("UPDATE project_page SET title = ?, project_image = ?, tool_logo = ?, description = ?, project_link_github = ? WHERE id = ?");
+    if ($stmt->execute([$title, $project_image, $tool_logo_string, $description, $github_link, $id])) {
         header('Location: index.php?updated=1');
         exit;
     } else {
@@ -212,6 +213,11 @@ include __DIR__ . '/../includes/header.php';
         <?php endif; ?>
         
         <form method="POST" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="title">Project Title <span class="required">*</span></label>
+                <input type="text" id="title" name="title" class="form-control" value="<?php echo htmlspecialchars($project['title'] ?? ''); ?>" required>
+            </div>
+            
             <div class="form-group">
                 <label for="project_image">Project Image</label>
                 <?php if ($project['project_image']): ?>

@@ -10,6 +10,7 @@ $pageTitle = 'Add Project';
 $error = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $title = $_POST['title'] ?? '';
     $description = $_POST['description'] ?? '';
     $github_link = $_POST['github_link'] ?? '';
     $project_image = '';
@@ -42,8 +43,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Store logos as comma-separated string
     $tool_logo_string = implode(',', $tool_logos);
     
-    $stmt = $pdo->prepare("INSERT INTO project_page (project_image, tool_logo, description, project_link_github) VALUES (?, ?, ?, ?)");
-    if ($stmt->execute([$project_image, $tool_logo_string, $description, $github_link])) {
+    $stmt = $pdo->prepare("INSERT INTO project_page (title, project_image, tool_logo, description, project_link_github) VALUES (?, ?, ?, ?, ?)");
+    if ($stmt->execute([$title, $project_image, $tool_logo_string, $description, $github_link])) {
         header('Location: index.php?added=1');
         exit;
     } else {
@@ -179,6 +180,13 @@ include __DIR__ . '/../includes/header.php';
         <?php endif; ?>
         
         <form method="POST" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="title">
+                    Project Title <span class="required">*</span>
+                </label>
+                <input type="text" id="title" name="title" class="form-control" placeholder="e.g. E-Commerce Website" required>
+            </div>
+            
             <div class="form-group">
                 <label for="project_image">
                     Project Image <span class="required">*</span>

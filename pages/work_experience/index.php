@@ -12,7 +12,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/portofolio/config/connect.php';
 
 // Fetch work experience data
 try {
-    $stmt = $pdo->query("SELECT * FROM work_experience_page ORDER BY date_work DESC");
+    $stmt = $pdo->query("SELECT * FROM work_experience_page ORDER BY date_work_start DESC");
     $experiences = $stmt->fetchAll();
 } catch (PDOException $e) {
     $experiences = [];
