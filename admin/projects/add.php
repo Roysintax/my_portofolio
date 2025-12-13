@@ -192,10 +192,23 @@ include __DIR__ . '/../includes/header.php';
                 <label for="project_image">
                     Project Image <span class="required">*</span>
                 </label>
-                <div class="file-upload-wrapper">
-                    <input type="file" id="project_image" name="project_image" class="form-control" accept="image/*">
+                <div class="custom-file-upload" id="projectImageUpload">
+                    <input type="file" id="project_image" name="project_image" accept="image/*" onchange="previewProjectImage(this)">
+                    <div class="upload-icon"></div>
+                    <div class="upload-text">
+                        <div class="main-text">Drag & Drop atau Klik untuk Upload</div>
+                        <div class="sub-text">📐 Ukuran ideal: <strong>1200 × 800 px</strong> (JPG/PNG)</div>
+                        <span class="browse-btn">📁 Pilih File</span>
+                    </div>
                 </div>
-                <p class="form-help">🖼️ <strong>Ukuran rekomendasi: 1200x800 px</strong> (JPG/PNG). Screenshot atau mockup project.</p>
+                <div class="file-preview-box" id="projectImagePreview">
+                    <img id="projectPreviewImg" src="" alt="Preview">
+                    <div class="file-info">
+                        <div class="file-name" id="projectFileName"></div>
+                        <div class="file-size" id="projectFileSize"></div>
+                    </div>
+                    <button type="button" class="remove-file" onclick="removeProjectImage()">×</button>
+                </div>
             </div>
             
             <!-- Multiple Tool Logos Section -->
@@ -306,6 +319,71 @@ function previewLogo(input) {
     } else {
         preview.style.display = 'none';
     }
+}
+
+// Project Image Preview Functions
+function previewProjectImage(input) {
+    const previewBox = document.getElementById('projectImagePreview');
+    const previewImg = document.getElementById('projectPreviewImg');
+    const fileName = document.getElementById('projectFileName');
+    const fileSize = document.getElementById('projectFileSize');
+    const uploadArea = document.getElementById('projectImageUpload');
+    
+    if (input.files && input.files[0]) {
+        const file = input.files[0];
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+            previewImg.src = e.target.result;
+            fileName.textContent = file.name;
+            fileSize.textContent = formatFileSize(file.size);
+            previewBox.classList.add('has-file');
+            uploadArea.style.display = 'none';
+        };
+        reader.readAsDataURL(file);
+    }
+}
+
+function removeProjectImage() {
+    document.getElementById('project_image').value = '';
+    document.getElementById('projectImagePreview').classList.remove('has-file');
+    document.getElementById('projectImageUpload').style.display = 'flex';
+}
+
+function formatFileSize(bytes) {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+}
+
+// Drag and Drop functionality
+const uploadArea = document.getElementById('projectImageUpload');
+if (uploadArea) {
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        uploadArea.addEventListener(eventName, preventDefaults, false);
+    });
+    
+    function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+    
+    ['dragenter', 'dragover'].forEach(eventName => {
+        uploadArea.addEventListener(eventName, () => uploadArea.classList.add('dragover'), false);
+    });
+    
+    ['dragleave', 'drop'].forEach(eventName => {
+        uploadArea.addEventListener(eventName, () => uploadArea.classList.remove('dragover'), false);
+    });
+    
+    uploadArea.addEventListener('drop', function(e) {
+        const dt = e.dataTransfer;
+        const files = dt.files;
+        document.getElementById('project_image').files = files;
+        previewProjectImage(document.getElementById('project_image'));
+    }, false);
 }
 </script>
 

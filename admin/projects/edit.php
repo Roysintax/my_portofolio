@@ -216,6 +216,7 @@ include __DIR__ . '/../includes/header.php';
             <div class="form-group">
                 <label for="title">Project Title <span class="required">*</span></label>
                 <input type="text" id="title" name="title" class="form-control" value="<?php echo htmlspecialchars($project['title'] ?? ''); ?>" required>
+                <p class="form-help">📝 Nama project yang kamu buat</p>
             </div>
             
             <div class="form-group">
@@ -228,12 +229,13 @@ include __DIR__ . '/../includes/header.php';
                 <div class="file-upload-wrapper">
                     <input type="file" id="project_image" name="project_image" class="form-control" accept="image/*">
                 </div>
-                <p class="form-help">Leave empty to keep current image</p>
+                <p class="form-help">🖼️ <strong>Ukuran ideal: 1200x800 px</strong> (JPG/PNG). Kosongkan jika tidak ingin mengubah.</p>
             </div>
             
             <!-- Multiple Tool Logos Section -->
             <div class="tools-section">
                 <h5>🛠️ Tool/Technology Logos</h5>
+                <p class="form-help" style="margin-bottom: 0.75rem;"><strong>Ukuran ideal logo: 100x100 px</strong> (PNG transparan)</p>
                 
                 <!-- Existing Logos -->
                 <?php if (!empty($existing_logos)): ?>
