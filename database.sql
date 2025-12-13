@@ -32,13 +32,23 @@ CREATE TABLE IF NOT EXISTS design_page (
     design_link VARCHAR(255)
 );
 
--- Tabel untuk halaman Education and Certification
-CREATE TABLE IF NOT EXISTS education_and_certification_page (
+-- Tabel untuk Education History
+CREATE TABLE IF NOT EXISTS education_history (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    category VARCHAR(100),
-    name_education_history VARCHAR(255),
-    image_activity VARCHAR(255),
+    name_education VARCHAR(255),
+    description TEXT,
+    image_activity TEXT,
+    start_date DATE,
+    end_date DATE,
+    still_studying TINYINT(1) DEFAULT 0
+);
+
+-- Tabel untuk Certifications
+CREATE TABLE IF NOT EXISTS certifications (
+    id INT AUTO_INCREMENT PRIMARY KEY,
     name_certificate VARCHAR(255),
+    issuer VARCHAR(255),
+    issue_date DATE,
     image_certificate VARCHAR(255),
     link_certificate VARCHAR(255)
 );

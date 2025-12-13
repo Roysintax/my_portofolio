@@ -36,9 +36,13 @@ if ($currentAdminPage === 'admin') {
             <span class="icon">🎨</span>
             <span>Designs</span>
         </a>
-        <a href="/portofolio/admin/education/" class="menu-item <?php echo $currentAdminPage === 'education' ? 'active' : ''; ?>">
-            <span class="icon">🎓</span>
-            <span>Education & Certs</span>
+        <a href="/portofolio/admin/education_history/" class="menu-item <?php echo $currentAdminPage === 'education_history' ? 'active' : ''; ?>">
+            <span class="icon">📚</span>
+            <span>Education History</span>
+        </a>
+        <a href="/portofolio/admin/certifications/" class="menu-item <?php echo $currentAdminPage === 'certifications' ? 'active' : ''; ?>">
+            <span class="icon">🏆</span>
+            <span>Certifications</span>
         </a>
         <a href="/portofolio/admin/experience/" class="menu-item <?php echo $currentAdminPage === 'experience' ? 'active' : ''; ?>">
             <span class="icon">💼</span>

@@ -1,7 +1,7 @@
 <?php
 /**
  * Certifications Section Component
- * Supports PDF certificates with thumbnail preview using PDF.js
+ * Uses new certifications table with PDF thumbnail preview using PDF.js
  */
 ?>
 
@@ -26,13 +26,21 @@
                     }
                     ?>
                     <div class="education-card" style="background: rgba(255,255,255,0.05); backdrop-filter: blur(10px);">
-                        <?php if (!empty($cert['category'])): ?>
+                        <!-- Issuer Badge -->
+                        <?php if (!empty($cert['issuer'])): ?>
                             <span style="font-size: 0.85rem; font-weight: 600; color: var(--accent);">
-                                <?php echo htmlspecialchars($cert['category']); ?>
+                                <?php echo htmlspecialchars($cert['issuer']); ?>
                             </span>
                         <?php endif; ?>
                         
-                        <h4 style="color: #fff;"><?php echo htmlspecialchars($cert['name_certificate']); ?></h4>
+                        <h4 style="color: #fff;"><?php echo htmlspecialchars($cert['name_certificate'] ?? 'Certificate'); ?></h4>
+                        
+                        <!-- Issue Date -->
+                        <?php if (!empty($cert['issue_date'])): ?>
+                            <p style="font-size: 0.85rem; color: rgba(255,255,255,0.6); margin-top: 0.25rem;">
+                                Issued: <?php echo date('M Y', strtotime($cert['issue_date'])); ?>
+                            </p>
+                        <?php endif; ?>
                         
                         <?php if (!empty($certFile)): ?>
                             <?php if ($isPdf): ?>
@@ -90,34 +98,22 @@ function renderPdfThumbnail(pdfUrl, canvasId) {
     if (!canvas) return;
     
     const ctx = canvas.getContext('2d');
-    
-    // Show loading state
     canvas.style.background = 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)';
     
     pdfjsLib.getDocument(pdfUrl).promise.then(function(pdf) {
-        // Get first page
         pdf.getPage(1).then(function(page) {
-            // Calculate scale to fit thumbnail
             const desiredWidth = 300;
             const viewport = page.getViewport({ scale: 1 });
             const scale = desiredWidth / viewport.width;
             const scaledViewport = page.getViewport({ scale: scale });
             
-            // Set canvas size
             canvas.width = scaledViewport.width;
             canvas.height = scaledViewport.height;
             
-            // Render PDF page
-            const renderContext = {
-                canvasContext: ctx,
-                viewport: scaledViewport
-            };
-            
-            page.render(renderContext);
+            page.render({ canvasContext: ctx, viewport: scaledViewport });
         });
     }).catch(function(error) {
         console.log('PDF load error:', error);
-        // Show fallback
         ctx.fillStyle = '#1a1a2e';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         ctx.fillStyle = '#fff';
@@ -173,9 +169,7 @@ function renderPdfThumbnail(pdfUrl, canvasId) {
     transition: opacity 0.3s ease;
 }
 
-.pdf-thumbnail-link:hover .pdf-overlay {
-    opacity: 1;
-}
+.pdf-thumbnail-link:hover .pdf-overlay { opacity: 1; }
 
 .pdf-badge {
     background: #e74c3c;
