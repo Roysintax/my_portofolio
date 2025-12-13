@@ -185,6 +185,7 @@ include __DIR__ . '/../includes/header.php';
                     Project Title <span class="required">*</span>
                 </label>
                 <input type="text" id="title" name="title" class="form-control" placeholder="e.g. E-Commerce Website" required>
+                <p class="form-help">📝 Nama project yang kamu buat</p>
             </div>
             
             <div class="form-group">
@@ -194,13 +195,13 @@ include __DIR__ . '/../includes/header.php';
                 <div class="file-upload-wrapper">
                     <input type="file" id="project_image" name="project_image" class="form-control" accept="image/*">
                 </div>
-                <p class="form-help">Recommended: 1200x800px, JPG or PNG format</p>
+                <p class="form-help">🖼️ <strong>Ukuran rekomendasi: 1200x800 px</strong> (JPG/PNG). Screenshot atau mockup project.</p>
             </div>
             
             <!-- Multiple Tool Logos Section -->
             <div class="tools-section">
                 <h5>🛠️ Tool/Technology Logos</h5>
-                <p class="form-help" style="margin-bottom: 1rem;">Add logos of technologies used in this project</p>
+                <p class="form-help" style="margin-bottom: 1rem;">Tambahkan logo teknologi yang digunakan. <strong>Ukuran rekomendasi: 100x100 px</strong> (PNG transparan)</p>
                 
                 <div id="logoInputsContainer">
                     <div class="logo-input-group" data-index="0">
@@ -222,12 +223,13 @@ include __DIR__ . '/../includes/header.php';
                     Project Description <span class="required">*</span>
                 </label>
                 <textarea id="description" name="description" class="form-control" rows="5" placeholder="Describe your project, what it does, and the technologies used..."></textarea>
+                <p class="form-help">📋 Deskripsi tentang apa yang project ini lakukan dan teknologi yang digunakan</p>
             </div>
             
             <div class="form-group">
                 <label for="github_link">GitHub Repository URL</label>
                 <input type="url" id="github_link" name="github_link" class="form-control" placeholder="https://github.com/username/repository">
-                <p class="form-help">Link to your project's source code repository</p>
+                <p class="form-help">🔗 Link ke repository source code project kamu</p>
             </div>
             
             <div class="form-actions">

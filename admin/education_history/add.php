@@ -71,11 +71,13 @@ include __DIR__ . '/../includes/header.php';
             <div class="form-group">
                 <label for="name_education">Education Name <span class="required">*</span></label>
                 <input type="text" id="name_education" name="name_education" class="form-control" placeholder="e.g. Bachelor of Computer Science - University Name" required>
+                <p class="form-help">📝 Nama pendidikan dan institusi (contoh: S1 Teknik Informatika - Universitas XYZ)</p>
             </div>
             
             <div class="form-group">
                 <label for="description">Description</label>
                 <textarea id="description" name="description" class="form-control" rows="4" placeholder="Describe your education, achievements, activities..."></textarea>
+                <p class="form-help">📋 Deskripsi kegiatan, prestasi, atau aktivitas selama pendidikan</p>
             </div>
             
             <div class="form-group">
@@ -99,7 +101,7 @@ include __DIR__ . '/../includes/header.php';
             <!-- Activity Images Carousel -->
             <div class="carousel-section">
                 <h5>🖼️ Activity Images (Carousel)</h5>
-                <p class="form-help" style="margin-bottom: 1rem;">Add photos of your educational activities</p>
+                <p class="form-help" style="margin-bottom: 1rem;">Tambahkan foto kegiatan pendidikan. <strong>Ukuran rekomendasi: 1920x1080 px (16:9)</strong></p>
                 
                 <div id="imageInputsContainer">
                     <div class="image-input-group" data-index="0">

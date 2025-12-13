@@ -44,6 +44,10 @@ if ($currentAdminPage === 'admin') {
             <span class="icon">🏆</span>
             <span>Certifications</span>
         </a>
+        <a href="/portofolio/admin/skills/" class="menu-item <?php echo $currentAdminPage === 'skills' ? 'active' : ''; ?>">
+            <span class="icon">⚡</span>
+            <span>Skills</span>
+        </a>
         <a href="/portofolio/admin/experience/" class="menu-item <?php echo $currentAdminPage === 'experience' ? 'active' : ''; ?>">
             <span class="icon">💼</span>
             <span>Work Experience</span>

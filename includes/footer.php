@@ -3,7 +3,7 @@
         <div class="container">
             <div class="footer-content">
                 <div class="footer-logo">
-                    My<span>Portfolio</span>
+                    Roy<span>sihan</span>
                 </div>
                 
                 <div class="footer-links">
@@ -16,7 +16,7 @@
             </div>
             
             <div class="footer-bottom">
-                <p>&copy; <?php echo date('Y'); ?> MyPortfolio. All rights reserved.</p>
+                <p>&copy; <?php echo date('Y'); ?> Roysihan. All rights reserved.</p>
             </div>
         </div>
     </footer>

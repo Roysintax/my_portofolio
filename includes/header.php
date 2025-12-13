@@ -69,6 +69,11 @@ $baseUrl = '/portofolio';
                         Education
                     </a>
                 </li>
+                <li>
+                    <a href="<?php echo $baseUrl; ?>/pages/skills/" class="nav-link <?php echo $currentPage === 'skills' ? 'active' : ''; ?>">
+                        Skills
+                    </a>
+                </li>
             </ul>
             
             <div class="nav-toggle">

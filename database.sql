@@ -53,6 +53,17 @@ CREATE TABLE IF NOT EXISTS certifications (
     link_certificate VARCHAR(255)
 );
 
+-- Tabel untuk Skills
+CREATE TABLE IF NOT EXISTS skills (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    skill_name VARCHAR(255),
+    skill_category VARCHAR(100),
+    skill_level INT DEFAULT 80,
+    skill_icon VARCHAR(255),
+    icon_size INT DEFAULT 100,
+    display_order INT DEFAULT 0
+);
+
 -- Tabel untuk halaman Work Experience
 CREATE TABLE IF NOT EXISTS work_experience_page (
     id INT AUTO_INCREMENT PRIMARY KEY,

@@ -52,16 +52,19 @@ include __DIR__ . '/../includes/header.php';
             <div class="form-group">
                 <label for="name_certificate">Certificate Name <span class="required">*</span></label>
                 <input type="text" id="name_certificate" name="name_certificate" class="form-control" placeholder="e.g. AWS Solutions Architect" required>
+                <p class="form-help">📝 Nama sertifikat yang kamu dapatkan</p>
             </div>
             
             <div class="form-group">
                 <label for="issuer">Issuer / Organization</label>
                 <input type="text" id="issuer" name="issuer" class="form-control" placeholder="e.g. Amazon Web Services">
+                <p class="form-help">🏢 Organisasi/lembaga yang menerbitkan sertifikat</p>
             </div>
             
             <div class="form-group">
                 <label for="issue_date">Issue Date</label>
                 <input type="date" id="issue_date" name="issue_date" class="form-control">
+                <p class="form-help">📅 Tanggal sertifikat diterbitkan</p>
             </div>
             
             <div class="form-group">
@@ -71,11 +74,13 @@ include __DIR__ . '/../includes/header.php';
                     <span class="file-type-badge image">📷 JPG/PNG</span>
                     <span class="file-type-badge pdf">📄 PDF</span>
                 </div>
+                <p class="form-help">🖼️ <strong>Ukuran rekomendasi: 800x600 px</strong> atau file PDF sertifikat</p>
             </div>
             
             <div class="form-group">
                 <label for="link_certificate">Certificate Link (Optional)</label>
                 <input type="url" id="link_certificate" name="link_certificate" class="form-control" placeholder="https://credential.net/...">
+                <p class="form-help">🔗 Link verifikasi sertifikat (jika tersedia)</p>
             </div>
             
             <div class="form-actions">

@@ -85,7 +85,7 @@ include __DIR__ . '/../includes/header.php';
             <!-- Carousel Images Section -->
             <div class="carousel-section">
                 <h5>🖼️ Design Images (Carousel)</h5>
-                <p class="form-help" style="margin-bottom: 1rem;">Add multiple images to display as a carousel</p>
+                <p class="form-help" style="margin-bottom: 1rem;">Tambahkan gambar desain. <strong>Ukuran rekomendasi: 1920x1080 px (16:9)</strong> atau <strong>1080x1080 px (1:1)</strong></p>
                 
                 <div id="imageInputsContainer">
                     <div class="image-input-group" data-index="0">
